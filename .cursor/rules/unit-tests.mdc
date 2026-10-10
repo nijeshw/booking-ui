@@ -1,0 +1,15 @@
+---
+description: Require unit tests with every new UI behavior
+alwaysApply: true
+---
+
+# Unit tests
+
+Ship unit tests in the same change as every new view, component, store, or client function. Do not add the functionality first and leave tests for later.
+
+- Runner: Vitest. Command: `npm test`.
+- Put `*.spec.ts` next to the source file it covers.
+- Test the behavior: the success path, invalid input, and the important failure.
+- A component test that needs a DOM starts with `@vitest-environment jsdom`.
+
+Run `npm test` and fix failures before finishing the change.
