@@ -2,22 +2,43 @@
 import { storeToRefs } from 'pinia'
 import { computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import { useTabRoute } from '@/composables/useTabRoute'
 import { useBillingStore } from '@/stores/business/billing.store'
+import { useTenantStore } from '@/stores/tenant/tenant.store'
+import { subscriptionLocksApp } from '@/utils/billing-lock'
 import { formatMinor, formatShortDate } from '@/utils/booking'
 
 const route = useRoute()
 const slug = computed(() => String(route.params.slug))
 const billingStore = useBillingStore()
-const { billing, error, busyPlan } = storeToRefs(billingStore)
-const { tab, tabTo } = useTabRoute('billing', computed(() => ['current', 'plans']))
+const tenants = useTenantStore()
+const { billing, error, busyPlan, busyPortal } = storeToRefs(billingStore)
+const { userTenants } = storeToRefs(tenants)
 
-const otherPlans = computed(() => {
+const paused = computed(() => {
+  const listed = userTenants.value.find((link) => link.tenant.slug === slug.value)?.subscriptionStatus
+  return subscriptionLocksApp(billing.value?.subscription?.status) || subscriptionLocksApp(listed)
+})
+
+const offer = computed(() => {
   const current = billing.value
   if (!current) {
-    return []
+    return null
   }
-  return current.plans.filter((item) => item.id !== current.subscription?.planId)
+  return current.plans.find((item) => item.purchasable && item.id !== current.subscription?.planId) ?? null
+})
+
+const periodWhen = computed(() => {
+  const subscription = billing.value?.subscription
+  if (!subscription) {
+    return ''
+  }
+  if (subscription.trialEndsAt) {
+    return `Trial ends ${formatShortDate(subscription.trialEndsAt)}`
+  }
+  if (subscription.currentPeriodEnd) {
+    return `Period ends ${formatShortDate(subscription.currentPeriodEnd)}`
+  }
+  return ''
 })
 
 const notice = computed(() => {
@@ -45,12 +66,30 @@ function priceLabel(amountMinor: number, currency: string): string {
   return `${formatMinor(amountMinor, currency)} / month`
 }
 
+function cardLabel(card: { brand: string; last4: string }): string {
+  const brand = card.brand.charAt(0).toUpperCase() + card.brand.slice(1)
+  return `${brand} ···· ${card.last4}`
+}
+
+function invoiceStatus(status: string): string {
+  if (status === 'paid') return 'Paid'
+  if (status === 'open') return 'Open'
+  if (status === 'uncollectible') return 'Uncollectible'
+  if (status === 'void') return 'Void'
+  return status
+}
+
 watch(slug, () => {
   void billingStore.fetch(slug.value)
+  void tenants.fetchUserTenants(true)
 }, { immediate: true })
 
 async function checkout(planId: string): Promise<void> {
   await billingStore.checkout(slug.value, planId)
+}
+
+async function openPortal(): Promise<void> {
+  await billingStore.openPortal(slug.value)
 }
 </script>
 
@@ -61,68 +100,92 @@ async function checkout(planId: string): Promise<void> {
         <h1>Billing</h1>
         <p>The plan for this business.</p>
       </div>
+      <v-btn
+        v-if="billing?.canOpenPortal"
+        variant="outlined"
+        color="primary"
+        :loading="busyPortal"
+        @click="openPortal"
+      >
+        Manage
+      </v-btn>
     </header>
+    <v-alert v-if="paused" type="warning" class="mb-4">
+      This business is paused until the invoice is paid.
+    </v-alert>
     <v-alert v-if="notice" type="info" class="mb-4">{{ notice }}</v-alert>
-    <v-alert v-if="error" type="error" class="mb-4">{{ error }}</v-alert>
-    <div v-if="billing" class="nx-panel">
-      <v-tabs :model-value="tab" color="primary" class="nx-tabs">
-        <v-tab value="current" :to="tabTo('current')">Current plan</v-tab>
-        <v-tab value="plans" :to="tabTo('plans')">Other plans</v-tab>
-      </v-tabs>
-      <v-tabs-window :model-value="tab">
-        <v-tabs-window-item value="current">
-          <div class="nx-panel-body">
-            <div v-if="billing.subscription" class="nx-stats">
-              <article class="nx-stat">
-                <span>Plan</span>
-                <strong>{{ billing.subscription.planName }}</strong>
-              </article>
-              <article class="nx-stat">
-                <span>Status</span>
-                <strong>{{ statusLabel(billing.subscription.status) }}</strong>
-              </article>
-              <article class="nx-stat">
-                <span>Price</span>
-                <strong>{{ priceLabel(billing.subscription.monthlyAmountMinor, billing.subscription.currency) }}</strong>
-              </article>
-              <article class="nx-stat">
-                <span>{{ billing.subscription.trialEndsAt ? 'Trial ends' : 'Period ends' }}</span>
-                <strong>
-                  {{
-                    billing.subscription.trialEndsAt
-                      ? formatShortDate(billing.subscription.trialEndsAt)
-                      : billing.subscription.currentPeriodEnd
-                        ? formatShortDate(billing.subscription.currentPeriodEnd)
-                        : '—'
-                  }}
-                </strong>
-              </article>
-            </div>
-            <p v-if="billing.subscription?.cancelAtPeriodEnd" class="nx-meta">This plan ends at the close of the current period.</p>
-            <p v-else-if="!billing.subscription" class="nx-meta">No plan is active.</p>
+    <v-alert v-if="error && !paused" type="error" class="mb-4">{{ error }}</v-alert>
+    <div v-if="billing" class="nx-bill">
+      <section v-if="billing.subscription" class="nx-bill-summary">
+        <div>
+          <p class="nx-bill-kicker">Current plan</p>
+          <h2>{{ billing.subscription.planName }}</h2>
+          <p class="nx-bill-price">
+            <template v-if="billing.subscription.monthlyAmountMinor === 0">Free</template>
+            <template v-else>
+              {{ formatMinor(billing.subscription.monthlyAmountMinor, billing.subscription.currency) }}
+              <span>/ month</span>
+            </template>
+          </p>
+          <p v-if="periodWhen" class="nx-bill-when">{{ periodWhen }}</p>
+        </div>
+        <span class="nx-bill-status" :data-status="billing.subscription.status">
+          {{ statusLabel(billing.subscription.status) }}
+        </span>
+      </section>
+      <p v-if="billing.subscription?.cancelAtPeriodEnd" class="nx-meta">This plan ends at the close of the current period.</p>
+      <p v-else-if="!billing.subscription" class="nx-meta">No plan is active.</p>
+      <div v-if="billing.stripe" class="nx-bill-facts">
+        <article class="nx-bill-fact">
+          <span>Card</span>
+          <strong>{{ billing.stripe.card ? cardLabel(billing.stripe.card) : 'None' }}</strong>
+        </article>
+        <article class="nx-bill-fact">
+          <span>Next payment</span>
+          <strong>
+            {{
+              billing.stripe.renewal
+                ? formatMinor(billing.stripe.renewal.amountMinor, billing.stripe.renewal.currency)
+                : '—'
+            }}
+          </strong>
+          <em v-if="billing.stripe.renewal?.at">{{ formatShortDate(billing.stripe.renewal.at) }}</em>
+        </article>
+      </div>
+      <article v-if="offer" class="nx-bill-offer">
+        <div>
+          <h2>{{ offer.name }}</h2>
+          <p>{{ priceLabel(offer.monthlyAmountMinor, offer.currency) }}</p>
+        </div>
+        <v-btn
+          v-if="billing.canManage"
+          variant="flat"
+          color="white"
+          :loading="busyPlan === offer.id"
+          @click="checkout(offer.id)"
+        >
+          Choose
+        </v-btn>
+      </article>
+      <section v-if="billing.stripe" class="nx-bill-rows">
+        <h2>Invoices</h2>
+        <article v-for="invoice in billing.stripe.invoices" :key="invoice.id" class="nx-bill-row">
+          <div>
+            <strong>{{ invoice.number || 'Invoice' }}</strong>
+            <small>{{ formatShortDate(invoice.createdAt) }}</small>
           </div>
-        </v-tabs-window-item>
-        <v-tabs-window-item value="plans">
-          <div class="nx-panel-body">
-            <div v-if="otherPlans.length" class="nx-plans">
-              <article v-for="plan in otherPlans" :key="plan.id" class="nx-plan">
-                <h2>{{ plan.name }}</h2>
-                <p>{{ priceLabel(plan.monthlyAmountMinor, plan.currency) }}</p>
-                <v-btn
-                  v-if="billing.canManage"
-                  color="primary"
-                  :disabled="!plan.purchasable"
-                  :loading="busyPlan === plan.id"
-                  @click="checkout(plan.id)"
-                >
-                  {{ plan.purchasable ? 'Choose plan' : 'Not available yet' }}
-                </v-btn>
-              </article>
-            </div>
-            <p v-else class="nx-meta">No other plans.</p>
-          </div>
-        </v-tabs-window-item>
-      </v-tabs-window>
+          <span class="nx-bill-status" :data-status="invoice.status">{{ invoiceStatus(invoice.status) }}</span>
+          <strong>{{ formatMinor(invoice.amountMinor, invoice.currency) }}</strong>
+          <a
+            v-if="invoice.hostedUrl"
+            :href="invoice.hostedUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+          >View</a>
+          <span v-else></span>
+        </article>
+        <p v-if="!billing.stripe.invoices.length" class="nx-meta nx-bill-empty">No invoices yet.</p>
+      </section>
     </div>
   </v-container>
 </template>

@@ -5,6 +5,7 @@ import NexoraLogo from '@/layouts/components/NexoraLogo.vue'
 import { useAuthStore } from '@/stores/auth/auth.store'
 import { useSessionStore } from '@/stores/global/session.store'
 import { useTenantStore } from '@/stores/tenant/tenant.store'
+import { subscriptionLocksApp } from '@/utils/billing-lock'
 
 const session = useSessionStore()
 const auth = useAuthStore()
@@ -95,7 +96,14 @@ onMounted(() => {
                     {{ roleLabel(link.role) }}
                   </span>
                   <router-link
-                    v-if="link.tenant.status === 'ACTIVE'"
+                    v-if="subscriptionLocksApp(link.subscriptionStatus)"
+                    class="nx-biz-status nx-biz-open"
+                    :to="`/businesses/${link.tenant.slug}/billing`"
+                  >
+                    Pay
+                  </router-link>
+                  <router-link
+                    v-else-if="link.tenant.status === 'ACTIVE'"
                     class="nx-biz-status nx-biz-open"
                     :to="`/businesses/${link.tenant.slug}`"
                   >
@@ -110,7 +118,7 @@ onMounted(() => {
                   </router-link>
                 </div>
               </div>
-              <div v-if="link.tenant.status === 'ACTIVE'" class="nx-biz-foot">
+              <div v-if="link.tenant.status === 'ACTIVE' && !subscriptionLocksApp(link.subscriptionStatus)" class="nx-biz-foot">
                 <v-btn
                   v-if="link.tenant.status === 'ACTIVE'"
                   size="small"

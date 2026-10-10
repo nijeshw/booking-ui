@@ -8,6 +8,20 @@ export interface IPlan {
 
 export interface IBilling {
   canManage: boolean
+  canOpenPortal: boolean
+  stripe: {
+    card: { brand: string; last4: string } | null
+    renewal: { amountMinor: number; currency: string; at: string | null } | null
+    invoices: Array<{
+      id: string
+      number: string | null
+      status: string
+      amountMinor: number
+      currency: string
+      createdAt: string
+      hostedUrl: string | null
+    }>
+  } | null
   subscription: {
     planId: string
     planName: string

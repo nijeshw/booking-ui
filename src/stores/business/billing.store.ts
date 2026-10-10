@@ -8,6 +8,7 @@ export const useBillingStore = defineStore('billing', {
     billing: null as IBilling | null,
     error: '',
     busyPlan: '',
+    busyPortal: false,
   }),
   actions: {
     async fetch(slug: string): Promise<void> {
@@ -28,6 +29,18 @@ export const useBillingStore = defineStore('billing', {
         this.error = errorMessage(caught)
       } finally {
         this.busyPlan = ''
+      }
+    },
+    async openPortal(slug: string): Promise<void> {
+      this.error = ''
+      this.busyPortal = true
+      try {
+        const session = await billingService.portal(slug)
+        window.location.assign(session.url)
+      } catch (caught) {
+        this.error = errorMessage(caught)
+      } finally {
+        this.busyPortal = false
       }
     },
   },

@@ -12,4 +12,10 @@ export default {
       body: JSON.stringify({ planId }),
     }))
   },
+
+  portal(slug: string): Promise<ICheckoutSession> {
+    return api<ICheckoutSession>('/billing/portal', withTenant(slug, {
+      method: 'POST',
+    }))
+  },
 }

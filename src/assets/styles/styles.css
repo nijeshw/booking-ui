@@ -791,6 +791,199 @@ body {
   margin-top: auto;
 }
 
+.nx-bill {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.nx-bill-summary,
+.nx-bill-facts article,
+.nx-bill-rows {
+  border: 1px solid rgba(31, 36, 48, 0.1);
+  border-radius: 16px;
+  background: rgb(var(--v-theme-surface));
+}
+
+.nx-bill-summary {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 22px;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, #006dfc 10%, rgb(var(--v-theme-surface))), rgb(var(--v-theme-surface)) 88px);
+}
+
+.nx-bill-kicker {
+  margin: 0;
+  color: rgba(31, 36, 48, 0.62);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.nx-bill-summary h2,
+.nx-bill-rows h2,
+.nx-bill-offer h2 {
+  margin: 2px 0 0;
+  color: #1f2430;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.nx-bill-price {
+  margin: 8px 0 0;
+  color: #1f2430;
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.nx-bill-price span,
+.nx-bill-fact em,
+.nx-bill-row small {
+  color: rgba(31, 36, 48, 0.62);
+  font-style: normal;
+  font-weight: 500;
+}
+
+.nx-bill-price span {
+  margin-left: 4px;
+  font-size: 0.875rem;
+}
+
+.nx-bill-when {
+  margin: 6px 0 0;
+  color: rgba(31, 36, 48, 0.62);
+  font-size: 0.875rem;
+}
+
+.nx-bill-status {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, #006dfc 12%, white);
+  color: #006dfc;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.nx-bill-status[data-status='ACTIVE'],
+.nx-bill-status[data-status='paid'] {
+  background: color-mix(in srgb, #00c1b2 18%, white);
+  color: #06756c;
+}
+
+.nx-bill-status[data-status='PAST_DUE'],
+.nx-bill-status[data-status='UNPAID'],
+.nx-bill-status[data-status='open'],
+.nx-bill-status[data-status='uncollectible'] {
+  background: color-mix(in srgb, #c2410c 12%, white);
+  color: #9a3412;
+}
+
+.nx-bill-status[data-status='CANCELED'],
+.nx-bill-status[data-status='void'] {
+  background: rgba(31, 36, 48, 0.08);
+  color: rgba(31, 36, 48, 0.7);
+}
+
+.nx-bill-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.nx-bill-facts article {
+  padding: 14px 16px;
+}
+
+.nx-bill-facts span,
+.nx-bill-row small {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.nx-bill-facts strong,
+.nx-bill-row strong {
+  display: block;
+  margin-top: 4px;
+  color: #1f2430;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.nx-bill-row > strong {
+  margin-top: 0;
+  text-align: right;
+}
+
+.nx-bill-offer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  max-width: none;
+  margin-top: 0;
+  padding: 18px 20px;
+  border: 0;
+  border-radius: 16px;
+  background: linear-gradient(100deg, #006dfc, #00c1b2);
+}
+
+.nx-bill-offer h2,
+.nx-bill-offer p {
+  color: #fff;
+}
+
+.nx-bill-offer p {
+  margin: 4px 0 0;
+  font-size: 0.875rem;
+}
+
+.nx-bill-offer .v-btn {
+  background: #fff;
+  color: #006dfc;
+}
+
+.nx-bill-offer .v-btn .v-btn__content {
+  color: #006dfc;
+}
+
+.nx-bill-rows {
+  overflow: hidden;
+}
+
+.nx-bill-rows h2 {
+  padding: 16px 18px 0;
+  font-size: 1rem;
+}
+
+.nx-bill-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto auto;
+  gap: 16px;
+  align-items: center;
+  padding: 14px 18px;
+  border-top: 1px solid rgba(31, 36, 48, 0.08);
+}
+
+.nx-bill-row a {
+  color: #006dfc;
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.nx-bill-empty {
+  margin: 0;
+  padding: 8px 18px 16px;
+}
+
 .nx-cal {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
@@ -1557,6 +1750,21 @@ body {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .nx-bill-facts,
+  .nx-bill-row {
+    grid-template-columns: 1fr;
+  }
+
+  .nx-bill-offer,
+  .nx-bill-summary {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .nx-bill-row > strong {
+    text-align: left;
+  }
+
   .nx-report-bar,
   .nx-cal-bar {
     flex-wrap: wrap;
@@ -1593,6 +1801,11 @@ body {
 .v-theme--dark .nx-slot-meta,
 .v-theme--dark .nx-cal-day > header strong,
 .v-theme--dark .nx-biz h3,
+.v-theme--dark .nx-bill-summary h2,
+.v-theme--dark .nx-bill-rows h2,
+.v-theme--dark .nx-bill-price,
+.v-theme--dark .nx-bill-facts strong,
+.v-theme--dark .nx-bill-row strong,
 .v-theme--dark .nx-plan h2,
 .v-theme--dark .nx-report-title h1,
 .v-theme--dark .nx-cal-title h1,
@@ -1612,6 +1825,12 @@ body {
 .v-theme--dark .nx-cal-title p,
 .v-theme--dark .nx-plan p,
 .v-theme--dark .nx-biz p,
+.v-theme--dark .nx-bill-when,
+.v-theme--dark .nx-bill-kicker,
+.v-theme--dark .nx-bill-price span,
+.v-theme--dark .nx-bill-fact em,
+.v-theme--dark .nx-bill-facts span,
+.v-theme--dark .nx-bill-row small,
 .v-theme--dark .nx-stat span,
 .v-theme--dark .nx-cal-day > header,
 .v-theme--dark .nx-book-when span,
@@ -1636,6 +1855,10 @@ body {
 
 .v-theme--dark .nx-panel,
 .v-theme--dark .nx-cal-day,
+.v-theme--dark .nx-bill-summary,
+.v-theme--dark .nx-bill-facts article,
+.v-theme--dark .nx-bill-rows,
+.v-theme--dark .nx-bill-row,
 .v-theme--dark .nx-stat,
 .v-theme--dark .nx-biz,
 .v-theme--dark .layout-vertical-nav,

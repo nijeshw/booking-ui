@@ -10,6 +10,7 @@ import ThemeToggle from '@/layouts/components/ThemeToggle.vue'
 import { useWorkspaceStore } from '@/stores/business/workspace.store'
 import { useSessionStore } from '@/stores/global/session.store'
 import { useTenantStore } from '@/stores/tenant/tenant.store'
+import { subscriptionLocksApp } from '@/utils/billing-lock'
 
 const route = useRoute()
 const router = useRouter()
@@ -46,7 +47,19 @@ const switchItems = computed(() => (
     }))
 ))
 
+function lockedFor(slug: string): boolean {
+  const status = userTenants.value.find((link) => link.tenant.slug === slug)?.subscriptionStatus
+  return subscriptionLocksApp(status)
+}
+
+const locked = computed(() => routeSlug.value !== '' && lockedFor(routeSlug.value))
+
 const items = computed(() => {
+  if (locked.value && routeSlug.value) {
+    return [
+      { title: 'Billing', to: `/businesses/${routeSlug.value}/billing`, icon: 'mdi-credit-card-outline', exact: true, permission: '', routeName: '' },
+    ]
+  }
   if (!routeSlug.value) {
     return [
       { title: 'Businesses', to: '/dashboard', icon: 'mdi-domain', exact: true, routeName: '' },
@@ -95,14 +108,22 @@ async function loadBrand(slug: string): Promise<void> {
 
 watch(routeSlug, (slug) => {
   brandSlug.value = ''
-  if (slug) {
+  if (slug && userTenants.value.length > 0 && !lockedFor(slug)) {
     void tenants.fetchPermissions(slug)
   }
 }, { immediate: true })
 
+watch(userTenants, () => {
+  const slug = routeSlug.value
+  if (!slug || lockedFor(slug) || permissions.value.catalog.length > 0) {
+    return
+  }
+  void tenants.fetchPermissions(slug)
+})
+
 watch([routeSlug, permissions, userTenants], () => {
   const slug = routeSlug.value
-  if (!slug || brandSlug.value === slug) {
+  if (!slug || brandSlug.value === slug || lockedFor(slug)) {
     return
   }
   const role = userTenants.value.find((link) => link.tenant.slug === slug)?.role
@@ -160,7 +181,7 @@ onMounted(() => {
         <span v-else>{{ brand.name }}</span>
       </div>
       <v-spacer />
-      <NavNotifications />
+      <NavNotifications v-if="!locked" />
       <ThemeToggle />
       <NavAccount />
     </header>

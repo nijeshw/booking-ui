@@ -1,6 +1,7 @@
 export interface IUserTenant {
   role: string
   status: string
+  subscriptionStatus: string | null
   tenant: {
     slug: string
     legalName: string

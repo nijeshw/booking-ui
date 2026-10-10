@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import BlankLayout from '@/layouts/blank.vue'
 import DefaultLayout from '@/layouts/default.vue'
 import { useSessionStore } from '@/stores/global/session.store'
+import { useTenantStore } from '@/stores/tenant/tenant.store'
+import { lockedBillingRoute } from '@/utils/billing-lock'
 import AccessPage from '@/pages/businesses/access.vue'
 import BillingPage from '@/pages/businesses/billing.vue'
 import BookingPage from '@/pages/businesses/booking.vue'
@@ -49,7 +51,7 @@ export const router = createRouter({
         { path: 'profile', name: 'profile', component: ProfilePage },
         { path: 'admin', name: 'admin', component: AdminPage, meta: { admin: true } },
         { path: 'businesses/:slug/access/:tab?', name: 'access', component: AccessPage },
-        { path: 'businesses/:slug/billing/:tab?', name: 'billing', component: BillingPage },
+        { path: 'businesses/:slug/billing', name: 'billing', component: BillingPage },
         { path: 'businesses/:slug/booking', name: 'booking', component: BookingPage },
         { path: 'businesses/:slug/calendar', name: 'calendar', component: CalendarPage },
         { path: 'businesses/:slug/customers/:tab?', name: 'customers', component: CustomersPage },
@@ -73,6 +75,16 @@ router.beforeEach(async (to) => {
   }
   if (to.meta.guest && session.accessToken) {
     return { name: 'dashboard' }
+  }
+  const slug = typeof to.params.slug === 'string' ? to.params.slug : ''
+  if (session.accessToken && to.path.startsWith('/businesses/') && slug) {
+    const tenants = useTenantStore()
+    await tenants.fetchUserTenants(true)
+    const status = tenants.userTenants.find((link) => link.tenant.slug === slug)?.subscriptionStatus
+    const redirect = lockedBillingRoute(to.name, slug, status)
+    if (redirect) {
+      return redirect
+    }
   }
   return true
 })
