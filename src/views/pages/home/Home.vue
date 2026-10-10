@@ -169,7 +169,7 @@ onBeforeUnmount(() => {
               </router-link>
             </template>
           </div>
-          <p class="site-fine">14 days with full access.</p>
+          <p class="site-fine">5 days with full access.</p>
         </div>
         <div class="site-stage" aria-hidden="true">
           <article class="site-book">
@@ -298,7 +298,7 @@ onBeforeUnmount(() => {
         <div class="site-wrap">
         <div class="site-cta-card site-reveal">
         <h2>Open your calendar to customers.</h2>
-        <p>14 days with full access. Verify your email before the business goes live.</p>
+        <p>5 days with full access. Verify your email before the business goes live.</p>
         <div class="site-actions site-actions-center">
           <router-link
             v-if="session.accessToken"

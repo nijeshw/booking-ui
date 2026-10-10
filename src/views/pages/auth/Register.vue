@@ -73,7 +73,7 @@ async function submit(): Promise<void> {
 <template>
   <AuthSplit wide>
     <h1 class="auth-title">Start your free trial</h1>
-    <p class="nx-lead mb-5">14 days with full access. Verify your email before the business goes live.</p>
+    <p class="nx-lead mb-5">5 days with full access. Verify your email before the business goes live.</p>
     <v-alert v-if="sent" type="success">
       Check your email for a verification link. In development the API prints that link in its log.
     </v-alert>
