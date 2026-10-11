@@ -1,6 +1,6 @@
 # booking-ui
 
-Vue 3 and Vuetify app for Nexora.
+Vue 3 and Vuetify app for Appointiva.
 
 ```
 cp .env.example .env

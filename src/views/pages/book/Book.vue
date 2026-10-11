@@ -2,7 +2,7 @@
 import { storeToRefs } from 'pinia'
 import { computed, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import mark from '@/assets/brand/nexora-mark.png'
+import mark from '@/assets/brand/appointiva-mark.png'
 import AppDateTimePicker from '@/components/AppDateTimePicker.vue'
 import type { IBookSlot } from '@/interfaces/booking/book.interface'
 import { useBookStore } from '@/stores/booking/book.store'
@@ -259,7 +259,7 @@ watch([serviceId, staffId, date], () => {
     <footer class="book-foot">
       <router-link to="/">
         <img :src="mark" alt="">
-        Nexora
+        Appointiva
       </router-link>
     </footer>
   </div>

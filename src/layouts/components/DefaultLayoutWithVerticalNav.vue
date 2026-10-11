@@ -5,7 +5,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useDisplay } from 'vuetify'
 import NavAccount from '@/layouts/components/NavAccount.vue'
 import NavNotifications from '@/layouts/components/NavNotifications.vue'
-import NexoraLogo from '@/layouts/components/NexoraLogo.vue'
+import AppointivaLogo from '@/layouts/components/AppointivaLogo.vue'
 import ThemeToggle from '@/layouts/components/ThemeToggle.vue'
 import { useWorkspaceStore } from '@/stores/business/workspace.store'
 import { useSessionStore } from '@/stores/global/session.store'
@@ -141,7 +141,7 @@ onMounted(() => {
 <template>
   <div class="layout-shell">
     <aside v-show="mdAndUp || drawer" class="layout-vertical-nav">
-      <router-link class="nav-brand" to="/dashboard"><NexoraLogo /></router-link>
+      <router-link class="nav-brand" to="/dashboard"><AppointivaLogo /></router-link>
       <div v-if="brand" class="nav-business">
         <img v-if="brand.logoUrl" :src="brand.logoUrl" alt="" class="nav-logo">
         <div class="nav-business-copy">

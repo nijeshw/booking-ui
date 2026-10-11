@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { computed, onMounted } from 'vue'
-import NexoraLogo from '@/layouts/components/NexoraLogo.vue'
+import AppointivaLogo from '@/layouts/components/AppointivaLogo.vue'
 import { useAuthStore } from '@/stores/auth/auth.store'
 import { useSessionStore } from '@/stores/global/session.store'
 import { useTenantStore } from '@/stores/tenant/tenant.store'
@@ -66,7 +66,7 @@ onMounted(() => {
       </div>
       <v-card class="auth-card dash-card pa-6 pa-sm-8" flat>
         <div class="dash-card-head">
-          <router-link class="auth-logo" to="/dashboard"><NexoraLogo /></router-link>
+          <router-link class="auth-logo" to="/dashboard"><AppointivaLogo /></router-link>
           <div class="dash-card-tools">
             <v-btn v-if="session.user?.platformRole === 'ADMIN'" variant="text" to="/admin">Admin</v-btn>
           </div>

@@ -1924,18 +1924,20 @@ body {
 .site-brand {
   display: inline-flex;
   flex: none;
+  align-items: center;
   text-decoration: none;
 }
 
-.site-logo,
+.site-logo {
+  display: block;
+  height: 44px;
+  width: auto;
+}
+
 .site-mark {
   display: block;
   height: 32px;
   width: auto;
-}
-
-.site-brand .site-logo {
-  height: 60px;
 }
 
 .site-nav-login {

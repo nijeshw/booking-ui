@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from 'vue'
-import logo from '@/assets/brand/nexora-logo.png'
-import mark from '@/assets/brand/nexora-mark.png'
+import logo from '@/assets/brand/appointiva-logo.png'
+import mark from '@/assets/brand/appointiva-mark.png'
 import { useSessionStore } from '@/stores/global/session.store'
 
 const session = useSessionStore()
@@ -94,7 +94,7 @@ onBeforeUnmount(() => {
     <header class="site-header">
       <div class="site-header-inner">
         <router-link class="site-brand" to="/" @click="closeMenu">
-          <img class="site-logo" :src="logo" alt="Nexora">
+          <img class="site-logo" :src="logo" alt="Appointiva">
         </router-link>
         <nav id="site-nav" class="site-nav" :class="{ 'is-open': menuOpen }">
           <a href="#features" @click="closeMenu">Features</a>
@@ -325,7 +325,7 @@ onBeforeUnmount(() => {
         <div>
           <router-link class="site-foot-brand" to="/">
             <img class="site-mark" :src="mark" alt="">
-            <span>Nexora</span>
+            <span>Appointiva</span>
           </router-link>
           <p>Appointments for businesses that live on the calendar.</p>
         </div>
@@ -345,7 +345,7 @@ onBeforeUnmount(() => {
         </div>
       </div>
       <div class="site-wrap site-legal">
-        <span>© {{ year }} Nexora</span>
+        <span>© {{ year }} Appointiva</span>
       </div>
     </footer>
   </div>

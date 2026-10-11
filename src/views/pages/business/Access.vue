@@ -247,7 +247,7 @@ onMounted(async () => {
         <v-tabs-window-item value="people">
           <div class="nx-panel-body">
             <div class="nx-toolbar">
-              <p class="nx-meta">Add someone by email. If they are new to Nexora, they get a link to set a password.</p>
+              <p class="nx-meta">Add someone by email. If they are new to Appointiva, they get a link to set a password.</p>
               <v-btn color="primary" prepend-icon="mdi-account-plus-outline" @click="openAdd">Add</v-btn>
             </div>
             <v-table v-if="people.length" class="nx-table">

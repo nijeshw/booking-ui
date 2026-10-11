@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import NexoraLogo from '@/layouts/components/NexoraLogo.vue'
+import AppointivaLogo from '@/layouts/components/AppointivaLogo.vue'
 
 defineProps<{
   wide?: boolean
@@ -21,7 +21,7 @@ defineProps<{
       </div>
       <v-card class="auth-card pa-6 pa-sm-8" :class="{ 'auth-card-wide': wide }" flat>
         <router-link class="auth-logo" to="/">
-          <NexoraLogo />
+          <AppointivaLogo />
         </router-link>
         <slot />
       </v-card>
