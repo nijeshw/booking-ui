@@ -2655,11 +2655,63 @@ body {
 }
 
 .site-legal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  justify-content: space-between;
   margin-top: 32px;
   padding-top: 18px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   color: rgba(255, 255, 255, 0.5);
   font-size: 0.8125rem;
+}
+
+.site-policy {
+  padding: 48px 0 72px;
+}
+
+.site-policy-card {
+  max-width: 44rem;
+  padding: 32px 28px;
+  border: 1px solid var(--site-line);
+  border-radius: 22px;
+  background: #fff;
+}
+
+.site-policy h1 {
+  margin: 0 0 8px;
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  letter-spacing: -0.03em;
+}
+
+.site-policy-updated,
+.site-policy p,
+.site-policy li {
+  color: var(--site-muted);
+  font-size: 0.975rem;
+  line-height: 1.6;
+}
+
+.site-policy-updated {
+  margin: 0 0 20px;
+}
+
+.site-policy h2 {
+  margin: 28px 0 8px;
+  font-size: 1.05rem;
+}
+
+.site-policy p,
+.site-policy ul {
+  margin: 0 0 12px;
+}
+
+.site-policy ul {
+  padding-left: 1.2rem;
+}
+
+.site-policy a {
+  color: var(--site-blue);
 }
 
 html:has(.site) {

@@ -327,7 +327,7 @@ onBeforeUnmount(() => {
             <img class="site-mark" :src="mark" alt="">
             <span>Appointiva</span>
           </router-link>
-          <p>Appointments for businesses that live on the calendar.</p>
+          <p>Appointiva is the online booking service at appointiva.co.uk.</p>
         </div>
         <div>
           <h2>Product</h2>
@@ -343,9 +343,14 @@ onBeforeUnmount(() => {
             <router-link to="/register">Start free trial</router-link>
           </template>
         </div>
+        <div>
+          <h2>Legal</h2>
+          <router-link to="/privacy">Privacy policy</router-link>
+        </div>
       </div>
       <div class="site-wrap site-legal">
         <span>© {{ year }} Appointiva</span>
+        <router-link to="/privacy">Privacy policy</router-link>
       </div>
     </footer>
   </div>

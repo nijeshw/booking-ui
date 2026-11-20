@@ -22,6 +22,7 @@ import RegisterPage from '@/pages/auth/register.vue'
 import ResetPasswordPage from '@/pages/auth/reset-password.vue'
 import VerifyEmailPage from '@/pages/auth/verify-email.vue'
 import HomePage from '@/pages/index.vue'
+import PrivacyPage from '@/pages/privacy.vue'
 import ProfilePage from '@/pages/profile/index.vue'
 import AdminPage from '@/pages/admin/index.vue'
 
@@ -33,6 +34,7 @@ export const router = createRouter({
       component: BlankLayout,
       children: [
         { path: '', name: 'home', component: HomePage },
+        { path: 'privacy', name: 'privacy', component: PrivacyPage },
         { path: 'login', name: 'login', component: LoginPage, meta: { guest: true } },
         { path: 'register', name: 'register', component: RegisterPage, meta: { guest: true } },
         { path: 'verify-email', name: 'verify-email', component: VerifyEmailPage },
