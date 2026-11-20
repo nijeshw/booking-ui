@@ -324,8 +324,7 @@ onBeforeUnmount(() => {
       <div class="site-wrap site-footer-grid">
         <div>
           <router-link class="site-foot-brand" to="/">
-            <img class="site-mark" :src="mark" alt="">
-            <span>Appointiva</span>
+            <img class="site-mark" :src="mark" alt="Appointiva">
           </router-link>
           <p>Appointiva is the online booking service at appointiva.co.uk.</p>
         </div>
